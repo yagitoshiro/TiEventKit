@@ -17,7 +17,7 @@
 // this is generated for your module, please do not change it
 -(id)moduleGUID
 {
-	return @"2e959bc4-eec9-4cda-a0ab-06b571c308c7";
+	return @"fc2316f3-7621-445e-8fd8-b866ad647dfa";
 }
 
 // this is generated for your module, please do not change it
@@ -108,9 +108,9 @@
     
     //*** Create date formater and timezone object
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZoneGMT = [NSTimeZone timeZoneWithName:@"GMT"]; 
+    NSTimeZone *timeZoneGMT = [NSTimeZone timeZoneWithName:@"GMT"];
     
-    [dateFormatter setTimeZone: timeZoneGMT];   
+    [dateFormatter setTimeZone: timeZoneGMT];
     [dateFormatter setDateFormat: @"yyyy-MM-dd hh:mm:ss Z"];
     
     //*** Provide POSIX date formatting to prevent date from drifting into a format that iCal won't accept
@@ -134,7 +134,7 @@
     //*** Do save
     [eventDB saveEvent:theEvent span:EKSpanThisEvent error:&err];
     
-    [dateFormatter release];    
+    [dateFormatter release];
     
     //*** Return.  YES returns as 1, NO as 0
     if (err == noErr) {

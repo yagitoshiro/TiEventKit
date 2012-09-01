@@ -5,12 +5,12 @@
 
 
 // open a single window
-var window = Ti.UI.createWindow({
+var win = Ti.UI.createWindow({
 	backgroundColor:'white'
 });
 var label = Ti.UI.createLabel();
-window.add(label);
-window.open();
+win.add(label);
+win.open();
 
 // TODO: write your module tests here
 var tieventkit = require('ti.eventkit');
@@ -22,6 +22,18 @@ Ti.API.info("module exampleProp is => " + tieventkit.exampleProp);
 tieventkit.exampleProp = "This is a test value";
 
 if (Ti.Platform.name == "android") {
-	var proxy = tieventkit.createExample({message: "Creating an example Proxy"});
+	var proxy = tieventkit.createExample({
+		message: "Creating an example Proxy",
+		backgroundColor: "red",
+		width: 100,
+		height: 100,
+		top: 100,
+		left: 150
+	});
+
 	proxy.printMessage("Hello world!");
+	proxy.message = "Hi world!.  It's me again.";
+	proxy.printMessage("Hello world!");
+	win.add(proxy);
 }
+
