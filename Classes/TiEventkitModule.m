@@ -51,7 +51,7 @@
 	[super shutdown:sender];
 }
 
-#pragma mark Cleanup 
+#pragma mark Cleanup
 
 -(void)dealloc
 {
@@ -78,7 +78,7 @@
 {
 	if (count == 1 && [type isEqualToString:@"my_event"])
 	{
-		// the first (of potentially many) listener is being added 
+		// the first (of potentially many) listener is being added
 		// for event named 'my_event'
 	}
 }
@@ -111,7 +111,7 @@
     //NSLog(@"[OBJ-C] location is: %@", [args valueForKey:@"location"]);
     //NSLog(@"[OBJ-C] notes: %@", [args valueForKey:@"notes"]);
     //NSLog(@"[OBJ-C] recur is: %@", [args valueForKey:@"recur"]);
-
+    
     //*** Instantiate EventKit objects
     //EKEventStore *eventDB = [[EKEventStore alloc] init];
     EKEvent *theEvent  = [EKEvent eventWithEventStore:self.eventStore];
@@ -143,7 +143,7 @@
         }else{
             isRecurrenceFrequencyExists = FALSE;
         }
-
+        
         if(isRecurrenceFrequencyExists){
             EKRecurrenceEnd *end = nil;
             if([recur valueForKey:@"endCount"]){
@@ -159,7 +159,7 @@
             id weeksOfTheYear = [recur valueForKey:@"weeksOfTheYear"];
             id daysOfTheYear = [recur valueForKey:@"daysOfTheYear"];
             id setPositions = [recur valueForKey:@"setPosition"];
-
+            
             NSInteger interval;
             interval = 1;
             if([recur valueForKey:@"interval"]){
@@ -170,7 +170,7 @@
             [[EKRecurrenceRule alloc] initRecurrenceWithFrequency:recur_frequency
                                                          interval:interval
                                                               end:end];
- 
+            
             theEvent.recurrenceRule = recur_rule;
         }
     }
