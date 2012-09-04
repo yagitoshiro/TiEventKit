@@ -8,32 +8,26 @@
 var win = Ti.UI.createWindow({
 	backgroundColor:'white'
 });
-var label = Ti.UI.createLabel();
-win.add(label);
 win.open();
 
 // TODO: write your module tests here
 var tieventkit = require('ti.eventkit');
 Ti.API.info("module is => " + tieventkit);
 
-label.text = tieventkit.example();
-
-Ti.API.info("module exampleProp is => " + tieventkit.exampleProp);
-tieventkit.exampleProp = "This is a test value";
-
-if (Ti.Platform.name == "android") {
-	var proxy = tieventkit.createExample({
-		message: "Creating an example Proxy",
-		backgroundColor: "red",
-		width: 100,
-		height: 100,
-		top: 100,
-		left: 150
-	});
-
-	proxy.printMessage("Hello world!");
-	proxy.message = "Hi world!.  It's me again.";
-	proxy.printMessage("Hello world!");
-	win.add(proxy);
+var recur = {
+  frequency:'yearly'
+};
+var cal_args = {
+  recur:recur,
+  startDate:'2013-02-22 00:00:00 GMT',
+  endDate:'2013-02-23 00:00:00 GMT',
+  title:"Soyo's birthday!",
+  location:'Here, there, everywhere!',
+  notes:"My lovely daughter's birthday"
+};
+var results = tieventkit.newEvent(cal_args);
+if(results == 1){
+  alert('OK');
+}else{
+  alert('Error');
 }
-
