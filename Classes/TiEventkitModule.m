@@ -17,7 +17,7 @@
 // this is generated for your module, please do not change it
 -(id)moduleGUID
 {
-	return @"fc2316f3-7621-445e-8fd8-b866ad647dfa";
+	return @"c69e9ee8-e460-4fc1-ae68-8fce4b38b198";
 }
 
 // this is generated for your module, please do not change it
@@ -33,6 +33,10 @@
 	// this method is called when the module is first loaded
 	// you *must* call the superclass
 	[super startup];
+    self.eventStore = [[EKEventStore alloc] init];
+    self.eventsList = [[NSMutableArray alloc] initWithArray:0];
+    self.defaultCalendar = [self.eventStore defaultCalendarForNewEvents];
+    
 	
 	NSLog(@"[INFO] %@ loaded",self);
 }
@@ -52,6 +56,10 @@
 -(void)dealloc
 {
 	// release any resources that have been retained by the module
+    [eventStore release];
+ 	[eventsList release];
+	[defaultCalendar release];
+    
 	[super dealloc];
 }
 
@@ -88,23 +96,25 @@
 #pragma Public APIs
 
 -(BOOL)newEvent:(id)args {
-    //*** Pull the arguments out of the object passed in by Titanium
-    id startDate = [args objectAtIndex:0];
-    id endDate = [args objectAtIndex:1];
-    id title = [args objectAtIndex:2];
-    id location = [args objectAtIndex:3];
-    id notes = [args objectAtIndex:4];
+    ENSURE_SINGLE_ARG(args, NSDictionary);
+    id startDate = [args valueForKey:@"startDate"];
+    id endDate = [args valueForKey:@"endDate"];
+    id title = [args valueForKey:@"title"];
+    id location = [args valueForKey:@"location"];
+    id notes = [args valueForKey:@"notes"];
+    id recur = [args valueForKey:@"recur"];
     
     //*** See what's coming in.  Comment this out for final build
-    NSLog(@"[OBJ-C] arg1 is: %@", [args objectAtIndex:0]);
-    NSLog(@"[OBJ-C] arg2 is: %@", [args objectAtIndex:1]);
-    NSLog(@"[OBJ-C] arg3 is: %@", [args objectAtIndex:2]);
-    NSLog(@"[OBJ-C] arg4 is: %@", [args objectAtIndex:3]);
-    NSLog(@"[OBJ-C] arg5 is: %@", [args objectAtIndex:4]);
-    
+    //NSLog(@"[OBJ-C] startDate is: %@", [args valueForKey:@"startDate"]);
+    //NSLog(@"[OBJ-C] endDate is: %@", [args valueForKey:@"endDate"]);
+    //NSLog(@"[OBJ-C] title is: %@", [args valueForKey:@"title"]);
+    //NSLog(@"[OBJ-C] location is: %@", [args valueForKey:@"location"]);
+    //NSLog(@"[OBJ-C] notes: %@", [args valueForKey:@"notes"]);
+    //NSLog(@"[OBJ-C] recur is: %@", [args valueForKey:@"recur"]);
+
     //*** Instantiate EventKit objects
-    EKEventStore *eventDB = [[EKEventStore alloc] init];
-    EKEvent *theEvent  = [EKEvent eventWithEventStore:eventDB];
+    //EKEventStore *eventDB = [[EKEventStore alloc] init];
+    EKEvent *theEvent  = [EKEvent eventWithEventStore:self.eventStore];
     
     //*** Create date formater and timezone object
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -112,6 +122,58 @@
     
     [dateFormatter setTimeZone: timeZoneGMT];
     [dateFormatter setDateFormat: @"yyyy-MM-dd hh:mm:ss Z"];
+    
+    if(recur){
+        ENSURE_SINGLE_ARG(recur, NSDictionary);
+        NSLog(@"[OBJ-C] recur frequency is: %@", [recur valueForKey:@"frequency"]);
+        NSLog(@"[OBJ-C] recur endCount is: %@", [recur valueForKey:@"endCount"]);
+        
+        id frequency = [recur valueForKey:@"frequency"];
+        EKRecurrenceFrequency  recur_frequency;
+        BOOL isRecurrenceFrequencyExists = TRUE;
+        
+        if([frequency isEqualToString:@"daily"]){
+            EKRecurrenceFrequency recur_frequency = EKRecurrenceFrequencyDaily;
+        }else if([frequency isEqualToString:@"weekly"]){
+            EKRecurrenceFrequency recur_frequency = EKRecurrenceFrequencyWeekly;
+        }else if([frequency isEqualToString:@"monthly"]){
+            EKRecurrenceFrequency recur_frequency = EKRecurrenceFrequencyMonthly;
+        }else if([frequency isEqualToString:@"yearly"]){
+            EKRecurrenceFrequency recur_frequency = EKRecurrenceFrequencyYearly;
+        }else{
+            isRecurrenceFrequencyExists = FALSE;
+        }
+
+        if(isRecurrenceFrequencyExists){
+            EKRecurrenceEnd *end = nil;
+            if([recur valueForKey:@"endCount"]){
+                EKRecurrenceEnd *end = [recur valueForKey:@"endCount"];
+            }else if([recur valueForKey:@"endDate"]){
+                EKRecurrenceEnd *end = [EKRecurrenceEnd recurrenceEndWithEndDate:[dateFormatter dateFromString: [recur valueForKey:@"endDate"]]];
+            }
+            
+            // TODO
+            id daysOfTheWeek = [recur valueForKey:@"daysOfTheWeek"];
+            id daysOfTheMonth = [recur valueForKey:@"daysOfTheMonth"];
+            id monthsOfTheYear = [recur valueForKey:@"monthsOfTheYear"];
+            id weeksOfTheYear = [recur valueForKey:@"weeksOfTheYear"];
+            id daysOfTheYear = [recur valueForKey:@"daysOfTheYear"];
+            id setPositions = [recur valueForKey:@"setPosition"];
+
+            NSInteger interval;
+            interval = 1;
+            if([recur valueForKey:@"interval"]){
+                id interval = [recur valueForKey:@"interval"];
+            }
+            
+            EKRecurrenceRule* recur_rule =
+            [[EKRecurrenceRule alloc] initRecurrenceWithFrequency:recur_frequency
+                                                         interval:interval
+                                                              end:end];
+ 
+            theEvent.recurrenceRule = recur_rule;
+        }
+    }
     
     //*** Provide POSIX date formatting to prevent date from drifting into a format that iCal won't accept
     NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
@@ -127,12 +189,12 @@
     theEvent.allDay = NO;
     
     //*** Set the calendar
-    [theEvent setCalendar:[eventDB defaultCalendarForNewEvents]];
+    [theEvent setCalendar:self.defaultCalendar];
     
     //*** Provide error trapping
     NSError *err;
     //*** Do save
-    [eventDB saveEvent:theEvent span:EKSpanThisEvent error:&err];
+    [self.eventStore saveEvent:theEvent span:EKSpanThisEvent error:&err];
     
     [dateFormatter release];
     
