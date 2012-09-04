@@ -21,7 +21,7 @@ Note: You'll need to pass the times based on the 24 hour clock, pre-adjusted to 
 
 ### ti.eventkit.function
 
-    newEvent(START_DATE, END_DATE, TITLE,LOCATION, NOTE);
+    newEvent(args);
 
 ### ti.eventkit.property
 
@@ -31,15 +31,15 @@ None.
 
 ```
     Titanium.event = require('ti.eventkit');
-    var results = Titanium.event.newEvent('2011-05-18 01:30:00 GMT','2011-05-18 05:00:00 GMT','Scotts BDay!','Our house','If this works, say W00t!');
+    var results = Titanium.event.newEvent({
+    	 timezone:'JST',
+    	 startDate:'2013-02-22 00:00:00 JST',
+    	 endDate:'2013-02-23 00:00:00 JST',
+    	 title:"Soyo's birthday!",
+    	 location:'Here, there, everywhere!',
+    	 notes:"My lovely daughter's birthday"
+    });
     Titanium.API.log(results);
-
-    // Returns
-    [OBJ-C] arg1 is: 2011-05-18 01:30:00 GMT
-    [OBJ-C] arg2 is: 2011-05-18 05:00:00 GMT
-    [OBJ-C] arg3 is: Scotts BDay!
-    [OBJ-C] arg4 is: Our house
-    [OBJ-C] arg5 is: If this works, say W00t!
 ```
 
 ## Author
@@ -49,6 +49,9 @@ http://twitter.com/tzmartin
 
 Mark Pemburn
 http://developer.appcelerator.com/user/831551/mark-pemburn
+
+Toshiro Yagi
+http://twitter.com/yagi_
 
 ## License
 
