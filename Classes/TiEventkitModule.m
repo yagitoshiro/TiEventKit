@@ -104,6 +104,12 @@
     id notes = [args valueForKey:@"notes"];
     id recur = [args valueForKey:@"recur"];
     
+    id timezone = [args valueForKey:@"timezone"];
+    
+    if(timezone == NULL){
+        timezone = @"GMT";
+    }
+    
     //*** See what's coming in.  Comment this out for final build
     //NSLog(@"[OBJ-C] startDate is: %@", [args valueForKey:@"startDate"]);
     //NSLog(@"[OBJ-C] endDate is: %@", [args valueForKey:@"endDate"]);
@@ -118,7 +124,7 @@
     
     //*** Create date formater and timezone object
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZoneGMT = [NSTimeZone timeZoneWithName:@"GMT"];
+    NSTimeZone *timeZoneGMT = [NSTimeZone timeZoneWithName:timezone];
     
     [dateFormatter setTimeZone: timeZoneGMT];
     [dateFormatter setDateFormat: @"yyyy-MM-dd hh:mm:ss Z"];
