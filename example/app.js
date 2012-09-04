@@ -18,9 +18,10 @@ var recur = {
   frequency:'yearly'
 };
 var cal_args = {
+  timezone:'JST',
   recur:recur,
-  startDate:'2013-02-22 00:00:00 GMT',
-  endDate:'2013-02-23 00:00:00 GMT',
+  startDate:'2013-02-22 00:00:00 JST',
+  endDate:'2013-02-23 00:00:00 JST',
   title:"Soyo's birthday!",
   location:'Here, there, everywhere!',
   notes:"My lovely daughter's birthday"
