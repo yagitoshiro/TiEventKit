@@ -95,6 +95,17 @@
 
 #pragma Public APIs
 
+-(id)_check_val:(id)inherited_arg
+{
+    NSString *arg;
+    arg = [inherited_arg stringValue];
+    if([arg isEqualString:@""] || arg == nil || [arg isEqual:[NSNull null]]){
+        return nil;
+    }else{
+        return [NSArray arrayWithObject: inherited_arg];
+    }
+}
+
 -(BOOL)newEvent:(id)args {
     ENSURE_SINGLE_ARG(args, NSDictionary);
     id startDate = [args valueForKey:@"startDate"];
@@ -159,12 +170,12 @@
             }
             
             // TODO
-            id daysOfTheWeek = [recur valueForKey:@"daysOfTheWeek"];
-            id daysOfTheMonth = [recur valueForKey:@"daysOfTheMonth"];
-            id monthsOfTheYear = [recur valueForKey:@"monthsOfTheYear"];
-            id weeksOfTheYear = [recur valueForKey:@"weeksOfTheYear"];
-            id daysOfTheYear = [recur valueForKey:@"daysOfTheYear"];
-            id setPositions = [recur valueForKey:@"setPosition"];
+            id daysOfTheWeek = [self _check_val:[recur valueForKey:@"daysOfTheWeek"]];
+            id daysOfTheMonth = [self _check_val:[recur valueForKey:@"daysOfTheMonth"]];
+            id monthsOfTheYear = [self _check_val:[recur valueForKey:@"monthsOfTheYear"]];
+            id weeksOfTheYear = [self _check_val:[recur valueForKey:@"weeksOfTheYear"]];
+            id daysOfTheYear = [self _check_val:[recur valueForKey:@"daysOfTheYear"]];
+            id setPositions = [self _check_val:[recur valueForKey:@"setPosition"]];
             
             NSInteger interval;
             interval = 1;
@@ -175,6 +186,12 @@
             EKRecurrenceRule* recur_rule =
             [[EKRecurrenceRule alloc] initRecurrenceWithFrequency:recur_frequency
                                                          interval:interval
+                                                    daysOfTheWeek:daysOfTheWeek
+                                                   daysOfTheMonth:daysOfTheMonth
+                                                  monthsOfTheYear:monthsOfTheYear
+                                                   weeksOfTheYear:weeksOfTheYear
+                                                    daysOfTheYear:daysOfTheYear
+                                                     setPositions:setPositions
                                                               end:end];
             
             theEvent.recurrenceRule = recur_rule;
